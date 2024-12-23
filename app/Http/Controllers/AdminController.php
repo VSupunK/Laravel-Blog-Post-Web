@@ -5,22 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use App\Models\User;
-
 class AdminController extends Controller
 {
     public function index()
     {
-        if (Auth::id()) {
+        // Ensure the user is authenticated
+        if (Auth::check()) {
             $usertype = Auth::user()->usertype;
 
-            if ($usertype == 'user') {
-                return view('dashboard');
-            } else if ($usertype == 'admin') {
+            // Check if the user is an admin
+            if ($usertype == 'admin') {
+                // Return the admin dashboard view
                 return view('admin.index');
             } else {
-                return redirect()->back();
+                // Redirect regular users to their dashboard
+                return redirect()->route('dashboard');
             }
         }
+
+        // If the user is not authenticated, redirect to the login page
+        return redirect()->route('login');
     }
 }
